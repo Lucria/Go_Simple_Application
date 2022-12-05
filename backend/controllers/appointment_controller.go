@@ -1,9 +1,11 @@
 package controllers
 
 import (
+	"backend/database"
 	"backend/models"
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"log"
 	"net/http"
 )
 
@@ -36,10 +38,18 @@ func SearchForAvailableAppointments(c *gin.Context) {
 func GetAppointmentById(c *gin.Context) {
 	id := c.Query("id")
 
-	// TODO implement get by id
-	fmt.Println(id)
-
-	c.Status(http.StatusOK)
+	for _, appointment := range database.AppointmentList {
+		if appointment.Id.String() == id {
+			c.JSON(http.StatusOK, gin.H{
+				"appointment": appointment,
+			})
+			return
+		}
+	}
+	c.JSON(http.StatusBadRequest, gin.H{
+		"error": fmt.Errorf("unable to find appointment by id %s", id),
+	})
+	log.Printf("Attempted to find missing appointment by id: %s\n", id)
 }
 
 // CreateAppointment
@@ -55,7 +65,8 @@ func CreateAppointment(c *gin.Context) {
 		return
 	}
 
-	// TODO Append to database
+	// Append to database
+	database.AppointmentList = append(database.AppointmentList, newAppointment)
 
 	c.JSON(http.StatusCreated, newAppointment)
 }
@@ -65,10 +76,18 @@ func CreateAppointment(c *gin.Context) {
 func DeleteAppointment(c *gin.Context) {
 	id := c.Query("id")
 
-	// TODO implement delete
 	fmt.Println(id)
+	for idx, appointment := range database.AppointmentList {
+		if appointment.Id.String() == id {
+			database.AppointmentList = append(database.AppointmentList[:idx], database.AppointmentList[idx+1:]...)
+			c.Status(http.StatusNoContent)
+			return
+		}
+	}
 
-	c.Status(http.StatusNoContent)
+	c.JSON(http.StatusBadRequest, gin.H{
+		"error": fmt.Errorf("unable to find appointment to delete. Id: %s", id),
+	})
 }
 
 // UpdateAppointment

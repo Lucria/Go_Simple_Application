@@ -6,7 +6,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 	"log"
-	"net/http"
 )
 
 func main() {
@@ -16,13 +15,6 @@ func main() {
 	database.Initialize()
 
 	server := gin.Default()
-
-	// TODO to be removed!
-	server.GET("/", func(c *gin.Context) {
-		c.JSON(http.StatusOK, gin.H{
-			"message": "Hello World!",
-		})
-	})
 
 	// Appointment
 	server.GET("/appointments", controllers.GetAllAppointments)

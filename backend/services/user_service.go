@@ -23,6 +23,6 @@ func VerifyLogin(authRequest AuthenticationRequest) (*User, error) {
 }
 
 func SaveUser(newUser *User) {
-	test := append(database.UserList, *newUser)
-	fmt.Printf("%v\n", test)
+	database.UserList = append(database.UserList, *newUser)
+	fmt.Printf("%v\n", database.UserList)
 }
