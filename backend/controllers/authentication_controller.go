@@ -12,7 +12,7 @@ import (
 // Register
 // User can sign up for a new account with credentials
 func Register(context *gin.Context) {
-	// TODO check already logged in and redirect
+	services.CheckForSession(context)
 
 	var input models.RegistrationRequest
 	if err := context.ShouldBindJSON(&input); err != nil {
@@ -39,23 +39,20 @@ func Register(context *gin.Context) {
 		})
 	}
 	userCookie := &http.Cookie{
-		Name:  "patientCookie",
+		Name:  "sessionCookie",
 		Value: sessionId.String(),
 	}
 	http.SetCookie(context.Writer, userCookie)
 	database.SessionMap[userCookie.Value] = newUser.Username
 
-	context.JSON(http.StatusCreated, gin.H{
-		"newUser": newUser,
-	})
-	// TODO redirect back to normal page
+	context.Redirect(http.StatusFound, "/")
 }
 
 // Login
 // User attempts to log in with username and password
 // Returns User if successful. Returns error if not
 func Login(context *gin.Context) {
-	// TODO if already logged in, redirect
+	services.CheckForSession(context)
 
 	var authRequest models.AuthenticationRequest
 	if err := context.ShouldBindJSON(&authRequest); err != nil {
@@ -79,14 +76,11 @@ func Login(context *gin.Context) {
 		})
 	}
 	userCookie := &http.Cookie{
-		Name:  "patientCookie",
+		Name:  "sessionCookie",
 		Value: sessionId.String(),
 	}
 	http.SetCookie(context.Writer, userCookie)
 	database.SessionMap[userCookie.Value] = user.Username
 
-	context.JSON(http.StatusOK, gin.H{
-		"user": user,
-	})
-	// TODO redirect back to normal page
+	context.Redirect(http.StatusFound, "/")
 }

@@ -3,6 +3,7 @@ package main
 import (
 	"backend/controllers"
 	"backend/database"
+	"backend/middleware"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 	"log"
@@ -16,22 +17,33 @@ func main() {
 
 	server := gin.Default()
 
-	// Appointment
+	// Private Routes (Appointment)
+	private := server.Group("/")
+	private.Use(middleware.AuthCookieChecker)
+	privateRoutes(private)
+
+	// Public Routes (Register and Login)
+	public := server.Group("/")
+	publicRoutes(public)
+
+	err := server.Run(":8080")
+	if err != nil {
+		log.Fatalf("Cannot start Gin server: %s", err)
+	}
+}
+
+func publicRoutes(server *gin.RouterGroup) {
+	server.POST("/auth/register", controllers.Register)
+	server.POST("/auth/login", controllers.Login)
+}
+
+func privateRoutes(server *gin.RouterGroup) {
 	server.GET("/appointments", controllers.GetAllAppointments)
 	server.POST("/appointments", controllers.SearchForAvailableAppointments)
 	server.GET("/appointment", controllers.GetAppointmentById)
 	server.POST("/appointment", controllers.CreateAppointment)
 	server.DELETE("/appointment", controllers.DeleteAppointment)
 	server.PUT("/appointment", controllers.UpdateAppointment)
-
-	// Register
-	server.POST("/auth/register", controllers.Register)
-	server.POST("/auth/login", controllers.Login)
-
-	err := server.Run(":8080")
-	if err != nil {
-		log.Fatalf("Cannot start Gin server: %s", err)
-	}
 }
 
 func loadEnv() {

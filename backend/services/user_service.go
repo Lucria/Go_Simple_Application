@@ -5,7 +5,20 @@ import (
 	. "backend/models"
 	"errors"
 	"fmt"
+	"github.com/gin-gonic/gin"
+	"log"
+	"net/http"
 )
+
+func CheckForSession(context *gin.Context) {
+	cookie, err := context.Cookie("sessionCookie")
+	user, isPresent := database.SessionMap[cookie]
+	if err == nil && isPresent {
+		log.Printf("User already logged in as %s\n", user)
+		context.Redirect(http.StatusFound, "/")
+		context.Abort()
+	}
+}
 
 func VerifyLogin(authRequest AuthenticationRequest) (*User, error) {
 	for i := range database.UserList {
