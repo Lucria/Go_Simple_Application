@@ -10,17 +10,40 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import {createTheme, ThemeProvider} from '@mui/material/styles';
+import {useNavigate} from "react-router-dom";
 
 const theme = createTheme();
 
 export default function RegisterPage() {
+  const navigate = useNavigate();
+
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-    });
+
+    // Register API
+    fetch('http://localhost:8080/auth/register', {
+      method: "POST",
+      body: JSON.stringify({
+        name: data.get('name'),
+        age: data.get('age'),
+        username: data.get('username'),
+        password: data.get('password'),
+      }),
+      headers: {
+        'Content-type': 'application/json; charset=UTF-8'
+      }
+    })
+      .then(response => response.json())
+      .then(data => {
+        if (data.username) {
+          console.log(data.username);
+          navigate("/dashboard");
+        }
+      })
+      .catch(err => {
+        console.warn(err);
+      });
   };
 
   return (
@@ -45,13 +68,13 @@ export default function RegisterPage() {
             <Grid container spacing={2}>
               <Grid item xs={12} sm={6}>
                 <TextField
-                  autoComplete="given-name"
-                  name="Name"
+                  name="name"
                   required
                   fullWidth
                   id="name"
                   label="Name"
                   autoFocus
+                  autoComplete="given-name"
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
@@ -59,6 +82,7 @@ export default function RegisterPage() {
                   required
                   fullWidth
                   id="age"
+                  name="age"
                   label="Age"
                   type="number"
                 />
@@ -91,11 +115,11 @@ export default function RegisterPage() {
               variant="contained"
               sx={{mt: 3, mb: 2}}
             >
-              Sign Up
+              Register
             </Button>
             <Grid container justifyContent="flex-end">
               <Grid item>
-                <Link href="#" variant="body2">
+                <Link href="/login" variant="body2">
                   Already have an account? Sign in
                 </Link>
               </Grid>

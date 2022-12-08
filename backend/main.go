@@ -16,6 +16,7 @@ func main() {
 	database.Initialize()
 
 	server := gin.Default()
+	server.Use(middleware.CORSMiddleware())
 
 	// Private Routes (Appointment)
 	private := server.Group("/")

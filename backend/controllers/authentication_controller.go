@@ -45,7 +45,9 @@ func Register(context *gin.Context) {
 	http.SetCookie(context.Writer, userCookie)
 	database.SessionMap[userCookie.Value] = newUser.Username
 
-	context.Redirect(http.StatusFound, "/")
+	context.JSON(http.StatusOK, gin.H{
+		"username": newUser.Username,
+	})
 }
 
 // Login
@@ -59,6 +61,7 @@ func Login(context *gin.Context) {
 		context.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
 		})
+		return
 	}
 
 	user, err := services.VerifyLogin(authRequest)
@@ -66,6 +69,7 @@ func Login(context *gin.Context) {
 		context.JSON(http.StatusForbidden, gin.H{
 			"error": err.Error(),
 		})
+		return
 	}
 
 	// Issue cookies and save session
@@ -74,6 +78,7 @@ func Login(context *gin.Context) {
 		context.JSON(http.StatusInternalServerError, gin.H{
 			"error": err.Error(),
 		})
+		return
 	}
 	userCookie := &http.Cookie{
 		Name:  "sessionCookie",
@@ -82,5 +87,7 @@ func Login(context *gin.Context) {
 	http.SetCookie(context.Writer, userCookie)
 	database.SessionMap[userCookie.Value] = user.Username
 
-	context.Redirect(http.StatusFound, "/")
+	context.JSON(http.StatusOK, gin.H{
+		"username": user.Username,
+	})
 }

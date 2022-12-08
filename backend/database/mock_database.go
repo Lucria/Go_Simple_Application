@@ -44,8 +44,22 @@ func Initialize() {
 	AppointmentList = []models.Appointment{
 		{
 			Id:            uuid.Must(uuid.NewV4()),
-			Title:         "Some Title",
-			Owner:         "Some Owner",
+			Title:         "Test Appointment 1",
+			Owner:         "Admin",
+			StartDateTime: time.Time{},
+			EndDateTime:   time.Time{},
+		},
+		{
+			Id:            uuid.Must(uuid.NewV4()),
+			Title:         "Test Appointment 2",
+			Owner:         "Tester1",
+			StartDateTime: time.Time{},
+			EndDateTime:   time.Time{},
+		},
+		{
+			Id:            uuid.Must(uuid.NewV4()),
+			Title:         "Test Appointment 3",
+			Owner:         "Tester1",
 			StartDateTime: time.Time{},
 			EndDateTime:   time.Time{},
 		},

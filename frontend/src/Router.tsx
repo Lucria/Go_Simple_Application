@@ -5,6 +5,7 @@ import LoginPage from "./pages/LoginPage/LoginPage";
 import React from "react";
 import BaseLayout from "./layouts/BaseLayout/BaseLayout";
 import WelcomePage from "./pages/WelcomePage/WelcomePage";
+import DashboardPage from "./pages/DashboardPage/DashboardPage";
 
 const routes: RouteObject[] = ([
   {
@@ -22,6 +23,10 @@ const routes: RouteObject[] = ([
       {
         path: "/login",
         element: <LoginPage/>
+      },
+      {
+        path: "/dashboard",
+        element: <DashboardPage/>
       },
       {
         path: "*",

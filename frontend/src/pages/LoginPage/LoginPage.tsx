@@ -10,17 +10,38 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import {createTheme, ThemeProvider} from '@mui/material/styles';
+import {useNavigate} from "react-router-dom";
 
 const theme = createTheme();
 
 export default function LoginPage() {
+  const navigate = useNavigate();
+
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-    });
+
+    // Call API
+    fetch('http://localhost:8080/auth/login', {
+      method: "POST",
+      body: JSON.stringify({
+        username: data.get('username'),
+        password: data.get('password'),
+      }),
+      headers: {
+        'Content-type': 'application/json; charset=UTF-8'
+      }
+    })
+      .then(response => response.json())
+      .then(data => {
+        if (data.username) {
+          console.log(data.username);
+          navigate("/dashboard");
+        }
+      })
+      .catch(err => {
+        console.warn(err);
+      });
   };
 
   return (
@@ -77,7 +98,7 @@ export default function LoginPage() {
                 </Link>
               </Grid>
               <Grid item>
-                <Link href="#" variant="body2">
+                <Link href="/register" variant="body2">
                   {"Don't have an account? Sign Up"}
                 </Link>
               </Grid>

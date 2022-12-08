@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"log"
-	"net/http"
 )
 
 func CheckForSession(context *gin.Context) {
@@ -15,7 +14,6 @@ func CheckForSession(context *gin.Context) {
 	user, isPresent := database.SessionMap[cookie]
 	if err == nil && isPresent {
 		log.Printf("User already logged in as %s\n", user)
-		context.Redirect(http.StatusFound, "/")
 		context.Abort()
 	}
 }
@@ -30,6 +28,7 @@ func VerifyLogin(authRequest AuthenticationRequest) (*User, error) {
 			if err != nil {
 				return nil, err
 			}
+			return &user, err
 		}
 	}
 	return nil, errors.New("no user found")

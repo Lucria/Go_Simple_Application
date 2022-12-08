@@ -18,7 +18,7 @@ type RegistrationRequest struct {
 	Username string `json:"username"`
 	Password string `json:"password"`
 	Name     string `json:"name"`
-	Age      int    `json:"age"`
+	Age      int    `json:"age,string"`
 }
 
 type AuthenticationRequest struct {
@@ -47,5 +47,5 @@ func (user *User) MapRegistrationRequestToUser(request RegistrationRequest) erro
 }
 
 func (user *User) ValidatePassword(password string) error {
-	return bcrypt.CompareHashAndPassword([]byte(password), []byte(user.Password))
+	return bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
 }
