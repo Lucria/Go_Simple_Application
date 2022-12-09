@@ -1,6 +1,6 @@
 import {createTheme, ThemeProvider} from "@mui/material/styles";
 import * as React from 'react';
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import dayjs, {Dayjs} from 'dayjs';
 import TextField, {TextFieldProps} from '@mui/material/TextField';
 import {AdapterDayjs} from '@mui/x-date-pickers/AdapterDayjs';
@@ -30,7 +30,27 @@ export default function DashboardPage() {
       start: new Date(presentDate),
       end: moment(presentDate).add(1, 'days').toDate(),
     },
-  ])
+  ]);
+  useEffect(() => {
+    fetch('http://localhost:8080/appointments', {
+      method: "GET",
+      headers: {
+        'Accept': 'application/json',
+        'Content-type': 'application/json; charset=UTF-8',
+      },
+      credentials: "include",
+      mode: "cors"
+    })
+      .then((res) => res.json())
+      .then(data => {
+        console.log(data);
+        // setEvents(data)
+      })
+      .catch(err => {
+        console.log("Not logged in yet");
+        navigate("/login");
+      })
+  });
 
   const theme = createTheme();
 

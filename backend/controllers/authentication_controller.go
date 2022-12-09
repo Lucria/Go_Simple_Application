@@ -41,6 +41,7 @@ func Register(context *gin.Context) {
 	userCookie := &http.Cookie{
 		Name:  "sessionCookie",
 		Value: sessionId.String(),
+		Path:  "/",
 	}
 	http.SetCookie(context.Writer, userCookie)
 	database.SessionMap[userCookie.Value] = newUser.Username
@@ -83,6 +84,7 @@ func Login(context *gin.Context) {
 	userCookie := &http.Cookie{
 		Name:  "sessionCookie",
 		Value: sessionId.String(),
+		Path:  "/",
 	}
 	http.SetCookie(context.Writer, userCookie)
 	database.SessionMap[userCookie.Value] = user.Username

@@ -32,7 +32,9 @@ export default function RegisterPage() {
       }),
       headers: {
         'Content-type': 'application/json; charset=UTF-8'
-      }
+      },
+      credentials: "include",
+      mode: "cors"
     })
       .then(response => response.json())
       .then(data => {
