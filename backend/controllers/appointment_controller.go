@@ -12,8 +12,25 @@ import (
 // GetAllAppointments
 // Get all appointments for specific user
 func GetAllAppointments(c *gin.Context) {
+	// Cookie authentication checked by middleware
+	cookie, _ := c.Cookie("sessionCookie")
+	usernameOfUser, _ := database.SessionMap[cookie]
+	var nameOfUser string
+	for _, user := range database.UserList {
+		if user.Username == usernameOfUser {
+			nameOfUser = user.Name
+		}
+	}
+
+	var userAppointments []models.Appointment
+	for _, appointment := range database.AppointmentList {
+		if appointment.Owner == nameOfUser {
+			userAppointments = append(userAppointments, appointment)
+		}
+	}
+
 	c.JSON(http.StatusOK, gin.H{
-		"message": "Getting all appointments for user!",
+		"appointments": userAppointments,
 	})
 }
 
