@@ -25,29 +25,56 @@ export default function DashboardPage() {
 
   const calendarLocalizer = momentLocalizer(moment);
   const [events, setEvents] = useState<Event[]>([]);
+  const [loadEvent, setLoadEventState] = useState<boolean>(true);
   useEffect(() => {
-    fetch('http://localhost:8080/appointments', {
-      method: "GET",
+    if (loadEvent) {
+      fetch('http://localhost:8080/appointments', {
+        method: "GET",
+        headers: {
+          'Accept': 'application/json',
+          'Content-type': 'application/json; charset=UTF-8',
+        },
+        credentials: "include",
+        mode: "cors"
+      })
+        .then((res) => res.json())
+        .then(data => {
+          console.log(data);
+          const appointments = data.appointments.map((appointment: any) => mapAppointmentToCalendarEvent(appointment));
+          setEvents(appointments);
+          setLoadEventState(false);
+        })
+        .catch(err => {
+          console.log(err);
+          navigate("/login");
+        })
+    }
+  }, [loadEvent]);
+
+  const theme = createTheme();
+
+  const bookAppointment = (startDate: Dayjs, endDate: Dayjs) => {
+    console.log("Handle appointment");
+    fetch("http://localhost:8080/appointment", {
+      method: "POST",
+      body: JSON.stringify({
+        title: "Test Title", // TODO new form field for title
+        owner: "Admin", // TODO retrieve owner's name from login response
+        startDateTime: startDate.valueOf(),
+        endDateTime: endDate.valueOf()
+      }),
       headers: {
-        'Accept': 'application/json',
-        'Content-type': 'application/json; charset=UTF-8',
+        "Content-type": "application/json; charset=UTF-8",
       },
       credentials: "include",
       mode: "cors"
     })
-      .then((res) => res.json())
-      .then(data => {
-        console.log(data);
-        const appointments: any[] = data.appointments;
-        setEvents(appointments.map(appointment => mapAppointmentToCalendarEvent(appointment)));
+      .then(response => response.json())
+      .then(() => {
+        setLoadEventState(true);
       })
-      .catch(err => {
-        console.log(err);
-        navigate("/login");
-      })
-  }, []);
-
-  const theme = createTheme();
+      .catch(err => console.warn(err))
+  }
 
   return (
     <ThemeProvider theme={theme}>
@@ -135,26 +162,6 @@ export default function DashboardPage() {
       </LocalizationProvider>
     </ThemeProvider>
   )
-}
-
-const bookAppointment = (startDate: Dayjs, endDate: Dayjs) => {
-  console.log("Handle appointment");
-  fetch("http://localhost:8080/appointment", {
-    method: "POST",
-    body: JSON.stringify({
-      title: "Test Title", // TODO new form field for title
-      owner: "Admin", // TODO retrieve owner's name from login response
-      startDateTime: startDate.unix(),
-      endDateTime: endDate.unix()
-    }),
-    headers: {
-      "Content-type": "application/json; charset=UTF-8",
-    },
-    credentials: "include",
-    mode: "cors"
-  })
-    .then(response => response.json())
-    .catch(err => console.warn(err))
 }
 
 function mapAppointmentToCalendarEvent(appointment: any): Event {

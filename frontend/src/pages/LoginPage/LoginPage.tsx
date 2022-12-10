@@ -37,7 +37,6 @@ export default function LoginPage() {
       .then(response => response.json())
       .then(data => {
         if (data.name) {
-          console.log(data.username);
           navigate("/dashboard");
         }
       })

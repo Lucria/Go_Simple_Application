@@ -46,22 +46,22 @@ func Initialize() {
 			Id:            uuid.Must(uuid.NewV4()),
 			Title:         "Test Appointment 1",
 			Owner:         "Admin",
-			StartDateTime: time.Now().AddDate(0, 0, -1),
-			EndDateTime:   time.Now(),
+			StartDateTime: time.Now().AddDate(0, 0, -1).UnixMilli(),
+			EndDateTime:   time.Now().UnixMilli(),
 		},
 		{
 			Id:            uuid.Must(uuid.NewV4()),
 			Title:         "Test Appointment 2",
 			Owner:         "Tester1",
-			StartDateTime: time.Now().AddDate(0, 0, -1),
-			EndDateTime:   time.Now(),
+			StartDateTime: time.Now().AddDate(0, 0, -1).UnixMilli(),
+			EndDateTime:   time.Now().UnixMilli(),
 		},
 		{
 			Id:            uuid.Must(uuid.NewV4()),
 			Title:         "Test Appointment 3",
 			Owner:         "Tester1",
-			StartDateTime: time.Now().AddDate(0, 0, 1),
-			EndDateTime:   time.Now().AddDate(0, 0, 2),
+			StartDateTime: time.Now().AddDate(0, 0, 1).UnixMilli(),
+			EndDateTime:   time.Now().AddDate(0, 0, 2).UnixMilli(),
 		},
 	}
 }
