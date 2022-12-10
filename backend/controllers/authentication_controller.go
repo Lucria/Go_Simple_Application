@@ -39,9 +39,10 @@ func Register(context *gin.Context) {
 		})
 	}
 	userCookie := &http.Cookie{
-		Name:  "sessionCookie",
-		Value: sessionId.String(),
-		Path:  "/",
+		Name:   "sessionCookie",
+		Value:  sessionId.String(),
+		Path:   "/",
+		MaxAge: 3600,
 	}
 	http.SetCookie(context.Writer, userCookie)
 	database.SessionMap[userCookie.Value] = newUser.Username
@@ -82,9 +83,10 @@ func Login(context *gin.Context) {
 		return
 	}
 	userCookie := &http.Cookie{
-		Name:  "sessionCookie",
-		Value: sessionId.String(),
-		Path:  "/",
+		Name:   "sessionCookie",
+		Value:  sessionId.String(),
+		Path:   "/",
+		MaxAge: 3600,
 	}
 	http.SetCookie(context.Writer, userCookie)
 	database.SessionMap[userCookie.Value] = user.Username

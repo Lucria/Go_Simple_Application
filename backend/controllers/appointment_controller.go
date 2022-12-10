@@ -51,7 +51,7 @@ func SearchForAvailableAppointments(c *gin.Context) {
 }
 
 // GetAppointmentById
-// Search for an Appointment by Id
+// Search for an Appointment by id
 func GetAppointmentById(c *gin.Context) {
 	id := c.Query("id")
 

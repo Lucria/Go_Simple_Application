@@ -24,13 +24,7 @@ export default function DashboardPage() {
   const [endDate, setEndDate] = React.useState<Dayjs | null>(dayjs(presentDate));
 
   const calendarLocalizer = momentLocalizer(moment);
-  const [events, setEvents] = useState<Event[]>([
-    {
-      title: 'Learn cool stuff',
-      start: new Date(presentDate),
-      end: moment(presentDate).add(1, 'days').toDate(),
-    },
-  ]);
+  const [events, setEvents] = useState<Event[]>([]);
   useEffect(() => {
     fetch('http://localhost:8080/appointments', {
       method: "GET",
@@ -44,13 +38,14 @@ export default function DashboardPage() {
       .then((res) => res.json())
       .then(data => {
         console.log(data);
-        // setEvents(data)
+        const appointments: any[] = data.appointments;
+        setEvents(appointments.map(appointment => mapAppointmentToCalendarEvent(appointment)));
       })
       .catch(err => {
-        console.log("Not logged in yet");
+        console.log(err);
         navigate("/login");
       })
-  });
+  }, []);
 
   const theme = createTheme();
 
@@ -127,4 +122,12 @@ export default function DashboardPage() {
       </LocalizationProvider>
     </ThemeProvider>
   )
+}
+
+function mapAppointmentToCalendarEvent(appointment: any): Event {
+  return {
+    title: appointment.title,
+    start: new Date(appointment.startDateTime),
+    end: new Date(appointment.endDateTime)
+  }
 }
