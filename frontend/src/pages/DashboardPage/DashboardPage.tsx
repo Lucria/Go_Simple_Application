@@ -20,8 +20,8 @@ export default function DashboardPage() {
   const navigate = useNavigate();
 
   const presentDate = new Date(Date.now()).setMinutes(0, 0, 0);
-  const [startDate, setStartDate] = React.useState<Dayjs | null>(dayjs(presentDate));
-  const [endDate, setEndDate] = React.useState<Dayjs | null>(dayjs(presentDate));
+  const [startDate, setStartDate] = React.useState<Dayjs>(dayjs(presentDate));
+  const [endDate, setEndDate] = React.useState<Dayjs>(dayjs(presentDate));
 
   const calendarLocalizer = momentLocalizer(moment);
   const [events, setEvents] = useState<Event[]>([]);
@@ -69,7 +69,6 @@ export default function DashboardPage() {
                   label="Start"
                   value={startDate}
                   onChange={(newValue: any) => {
-                    console.log(newValue);
                     setStartDate(newValue);
                   }}
                   renderInput={(params: TextFieldProps) => <TextField {...params} />}
@@ -79,11 +78,18 @@ export default function DashboardPage() {
                   label="End"
                   value={endDate}
                   onChange={(newValue: any) => {
-                    console.log(newValue);
                     setEndDate(newValue);
                   }}
                   renderInput={(params: TextFieldProps) => <TextField {...params} />}
                 />
+                <Button
+                  onClick={() => bookAppointment(startDate, endDate)}
+                  type="submit"
+                  fullWidth
+                  variant="contained"
+                >
+                  Book Appointment
+                </Button>
               </Stack>
             </CardContent>
           </Card>
@@ -103,25 +109,52 @@ export default function DashboardPage() {
           </Calendar>
         </Box>
 
-        <Button
-          onClick={() => {
-            document.cookie.split(";").forEach((c) => {
-              document.cookie = c
-                .replace(/^ +/, "")
-                .replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
-            });
-            navigate("/login");
+        <Box
+          sx={{
+            marginX: 50
           }}
-          type="submit"
-          fullWidth
-          variant="contained"
-          sx={{mt: 8, mb: 2}}
         >
-          Logout
-        </Button>
+          <Button
+            onClick={() => {
+              document.cookie.split(";").forEach((c) => {
+                document.cookie = c
+                  .replace(/^ +/, "")
+                  .replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
+              });
+              navigate("/login");
+            }}
+            type="submit"
+            fullWidth
+            variant="contained"
+            sx={{mt: 4}}
+          >
+            Logout
+          </Button>
+        </Box>
+
       </LocalizationProvider>
     </ThemeProvider>
   )
+}
+
+const bookAppointment = (startDate: Dayjs, endDate: Dayjs) => {
+  console.log("Handle appointment");
+  fetch("http://localhost:8080/appointment", {
+    method: "POST",
+    body: JSON.stringify({
+      title: "Test Title", // TODO new form field for title
+      owner: "Admin", // TODO retrieve owner's name from login response
+      startDateTime: startDate.unix(),
+      endDateTime: endDate.unix()
+    }),
+    headers: {
+      "Content-type": "application/json; charset=UTF-8",
+    },
+    credentials: "include",
+    mode: "cors"
+  })
+    .then(response => response.json())
+    .catch(err => console.warn(err))
 }
 
 function mapAppointmentToCalendarEvent(appointment: any): Event {

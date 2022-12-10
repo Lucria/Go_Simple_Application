@@ -34,22 +34,6 @@ func GetAllAppointments(c *gin.Context) {
 	})
 }
 
-// SearchForAvailableAppointments
-// Search for available time slots within a time period
-func SearchForAvailableAppointments(c *gin.Context) {
-	var request models.AppointmentSearchRequest
-	if err := c.ShouldBindJSON(&request); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error": err.Error(),
-		})
-		return
-	}
-
-	// TODO search for appointments within time frame
-
-	c.Status(http.StatusOK)
-}
-
 // GetAppointmentById
 // Search for an Appointment by id
 func GetAppointmentById(c *gin.Context) {

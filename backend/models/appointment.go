@@ -9,8 +9,8 @@ type Appointment struct {
 	Id            uuid.UUID `json:"id"`
 	Title         string    `json:"title"`
 	Owner         string    `json:"owner"`
-	StartDateTime time.Time `json:"startDateTime"`
-	EndDateTime   time.Time `json:"endDateTime"`
+	StartDateTime time.Time `json:"startDateTime" time_format:"unix"`
+	EndDateTime   time.Time `json:"endDateTime" time_format:"unix"`
 }
 
 type AppointmentSearchRequest struct {

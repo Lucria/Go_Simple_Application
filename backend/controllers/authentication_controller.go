@@ -48,7 +48,7 @@ func Register(context *gin.Context) {
 	database.SessionMap[userCookie.Value] = newUser.Username
 
 	context.JSON(http.StatusOK, gin.H{
-		"username": newUser.Username,
+		"name": newUser.Name,
 	})
 }
 
@@ -92,6 +92,6 @@ func Login(context *gin.Context) {
 	database.SessionMap[userCookie.Value] = user.Username
 
 	context.JSON(http.StatusOK, gin.H{
-		"username": user.Username,
+		"name": user.Name,
 	})
 }

@@ -38,7 +38,7 @@ export default function RegisterPage() {
     })
       .then(response => response.json())
       .then(data => {
-        if (data.username) {
+        if (data.name) {
           console.log(data.username);
           navigate("/dashboard");
         }

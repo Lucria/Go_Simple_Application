@@ -40,7 +40,6 @@ func publicRoutes(server *gin.RouterGroup) {
 
 func privateRoutes(server *gin.RouterGroup) {
 	server.GET("/appointments", controllers.GetAllAppointments)
-	server.POST("/appointments", controllers.SearchForAvailableAppointments)
 	server.GET("/appointment", controllers.GetAppointmentById)
 	server.POST("/appointment", controllers.CreateAppointment)
 	server.DELETE("/appointment", controllers.DeleteAppointment)
