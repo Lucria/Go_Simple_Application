@@ -138,7 +138,7 @@ export default function DashboardPage() {
 
         <Box
           sx={{
-            marginX: 50
+            marginX: '30%'
           }}
         >
           <Button
